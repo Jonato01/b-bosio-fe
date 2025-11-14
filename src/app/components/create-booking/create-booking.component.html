@@ -1,0 +1,198 @@
+<div class="booking-container">
+  <mat-card class="booking-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>event_available</mat-icon>
+        Nuova Prenotazione
+      </mat-card-title>
+      <mat-card-subtitle>Prenota il tuo alloggio</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+
+        <!-- Accommodation Selection -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Alloggio</mat-label>
+          <mat-select formControlName="accommodation">
+            @for (acc of accommodations(); track acc.id) {
+              <mat-option [value]="acc.id">{{ acc.title }}</mat-option>
+            }
+          </mat-select>
+          <mat-icon matPrefix>home</mat-icon>
+          @if (bookingForm.get('accommodation')?.invalid && bookingForm.get('accommodation')?.touched) {
+            <mat-error>Seleziona un alloggio</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Check-in Date & Time -->
+        <div class="date-time-group">
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>Data Check-in</mat-label>
+            <input matInput [matDatepicker]="checkinPicker" formControlName="check_in_date" [min]="minDate">
+            <mat-datepicker-toggle matSuffix [for]="checkinPicker"></mat-datepicker-toggle>
+            <mat-datepicker #checkinPicker></mat-datepicker>
+            @if (bookingForm.get('check_in_date')?.invalid && bookingForm.get('check_in_date')?.touched) {
+              <mat-error>Data richiesta</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="time-field">
+            <mat-label>Ora Check-in</mat-label>
+            <input matInput type="time" formControlName="check_in_time">
+            <mat-icon matPrefix>schedule</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <!-- Check-out Date & Time -->
+        <div class="date-time-group">
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>Data Check-out</mat-label>
+            <input matInput [matDatepicker]="checkoutPicker" formControlName="check_out_date" [min]="minDate">
+            <mat-datepicker-toggle matSuffix [for]="checkoutPicker"></mat-datepicker-toggle>
+            <mat-datepicker #checkoutPicker></mat-datepicker>
+            @if (bookingForm.get('check_out_date')?.invalid && bookingForm.get('check_out_date')?.touched) {
+              <mat-error>Data richiesta</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="time-field">
+            <mat-label>Ora Check-out</mat-label>
+            <input matInput type="time" formControlName="check_out_time">
+            <mat-icon matPrefix>schedule</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <!-- Number of Guests -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Numero Ospiti</mat-label>
+          <input matInput type="number" formControlName="num_guests" min="1">
+          <mat-icon matPrefix>people</mat-icon>
+          @if (bookingForm.get('num_guests')?.invalid && bookingForm.get('num_guests')?.touched) {
+            <mat-error>Almeno 1 ospite richiesto</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Notes -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Note aggiuntive</mat-label>
+          <textarea matInput formControlName="notes" rows="3" placeholder="Richieste particolari..."></textarea>
+          <mat-icon matPrefix>note</mat-icon>
+        </mat-form-field>
+
+        <!-- Check Availability Button -->
+        <button mat-raised-button
+                color="accent"
+                type="button"
+                class="full-width check-button"
+                (click)="checkAvailability()"
+                [disabled]="checkingAvailability()">
+          @if (checkingAvailability()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <ng-container>
+              <mat-icon>search</mat-icon>
+              Verifica Disponibilità
+            </ng-container>
+          }
+        </button>
+
+        @if (availabilityChecked()) {
+          <div class="availability-result" [class.available]="isAvailable()" [class.unavailable]="!isAvailable()">
+            @if (isAvailable()) {
+              <mat-icon>check_circle</mat-icon>
+              <span>Disponibile! Procedi con la prenotazione</span>
+            } @else {
+              <mat-icon>cancel</mat-icon>
+              <span>Non disponibile per le date selezionate</span>
+            }
+          </div>
+        }
+
+        <!-- Guests Details -->
+        @if (isAvailable() && guests.length > 0) {
+          <mat-expansion-panel class="guests-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>person_add</mat-icon>
+                Dati Ospiti ({{ guests.length }})
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div formArrayName="guests_data">
+              @for (guest of guests.controls; track $index) {
+                <div [formGroupName]="$index" class="guest-form">
+                  <h4>Ospite {{ $index + 1 }}</h4>
+
+                  <div class="guest-row">
+                    <mat-form-field appearance="outline" class="flex-1">
+                      <mat-label>Nome Completo</mat-label>
+                      <input matInput formControlName="full_name">
+                      <mat-icon matPrefix>person</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="flex-1">
+                      <mat-label>Email</mat-label>
+                      <input matInput type="email" formControlName="email">
+                      <mat-icon matPrefix>email</mat-icon>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="guest-row">
+                    <mat-form-field appearance="outline" class="flex-1">
+                      <mat-label>Telefono</mat-label>
+                      <input matInput formControlName="phone">
+                      <mat-icon matPrefix>phone</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="flex-1">
+                      <mat-label>Data di Nascita</mat-label>
+                      <input matInput type="date" formControlName="birth_date">
+                      <mat-icon matPrefix>cake</mat-icon>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="guest-row">
+                    <mat-form-field appearance="outline" class="flex-1">
+                      <mat-label>Tipo Documento</mat-label>
+                      <mat-select formControlName="document_type">
+                        <mat-option value="Carta d'Identità">Carta d'Identità</mat-option>
+                        <mat-option value="Passaporto">Passaporto</mat-option>
+                        <mat-option value="Patente">Patente</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="flex-1">
+                      <mat-label>Numero Documento</mat-label>
+                      <input matInput formControlName="document_number">
+                      <mat-icon matPrefix>badge</mat-icon>
+                    </mat-form-field>
+                  </div>
+                </div>
+              }
+            </div>
+          </mat-expansion-panel>
+        }
+
+        <!-- Submit Button -->
+        @if (isAvailable()) {
+          <button mat-raised-button
+                  color="primary"
+                  type="submit"
+                  class="full-width submit-button"
+                  [disabled]="bookingForm.invalid || loading()">
+            @if (loading()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <ng-container>
+                <mat-icon>check</mat-icon>
+                Conferma Prenotazione
+              </ng-container>
+            }
+          </button>
+        }
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+

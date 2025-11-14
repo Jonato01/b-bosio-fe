@@ -1,0 +1,98 @@
+<div class="home-container">
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>
+        <mat-icon>home_work</mat-icon>
+        Benvenuto in B&Bosio
+      </h1>
+      <p class="subtitle">Sistema di prenotazione alloggi facile e veloce</p>
+
+      @if (!authService.isAuthenticated()) {
+        <div class="cta-buttons">
+          <button mat-raised-button color="primary" routerLink="/register" class="cta-button">
+            <mat-icon>person_add</mat-icon>
+            Registrati ora
+          </button>
+          <button mat-raised-button routerLink="/login" class="cta-button">
+            <mat-icon>login</mat-icon>
+            Accedi
+          </button>
+        </div>
+      } @else {
+        <button mat-raised-button color="primary" (click)="navigateToBooking()" class="cta-button">
+          <mat-icon>event_available</mat-icon>
+          Prenota ora
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="features-section">
+    <h2>Caratteristiche</h2>
+    <div class="features-grid">
+      <mat-card class="feature-card">
+        <mat-icon>calendar_today</mat-icon>
+        <h3>Prenotazione Semplice</h3>
+        <p>Prenota il tuo alloggio in pochi clic con date e orari personalizzabili</p>
+      </mat-card>
+
+      <mat-card class="feature-card">
+        <mat-icon>verified_user</mat-icon>
+        <h3>Sicurezza</h3>
+        <p>Sistema di autenticazione sicuro con protezione dei dati personali</p>
+      </mat-card>
+
+      <mat-card class="feature-card">
+        <mat-icon>notifications_active</mat-icon>
+        <h3>Notifiche in Tempo Reale</h3>
+        <p>Ricevi conferme e aggiornamenti istantanei sulle tue prenotazioni</p>
+      </mat-card>
+
+      <mat-card class="feature-card">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <h3>Gestione Admin</h3>
+        <p>Pannello amministrativo completo per gestire prenotazioni e disponibilità</p>
+      </mat-card>
+
+      <mat-card class="feature-card">
+        <mat-icon>block</mat-icon>
+        <h3>Gestione Disponibilità</h3>
+        <p>Blocca periodi e giorni specifici per manutenzione o eventi speciali</p>
+      </mat-card>
+
+      <mat-card class="feature-card">
+        <mat-icon>people</mat-icon>
+        <h3>Gestione Ospiti</h3>
+        <p>Registra tutti i dettagli degli ospiti per ogni prenotazione</p>
+      </mat-card>
+    </div>
+  </div>
+
+  @if (authService.isAuthenticated()) {
+    <div class="quick-actions-section">
+      <h2>Azioni Rapide</h2>
+      <div class="quick-actions-grid">
+        <mat-card class="action-card" routerLink="/bookings/new">
+          <mat-icon color="primary">add_circle</mat-icon>
+          <h3>Nuova Prenotazione</h3>
+          <p>Crea una nuova prenotazione</p>
+        </mat-card>
+
+        <mat-card class="action-card" routerLink="/my-bookings">
+          <mat-icon color="accent">event_note</mat-icon>
+          <h3>Le Mie Prenotazioni</h3>
+          <p>Visualizza e gestisci le tue prenotazioni</p>
+        </mat-card>
+
+        @if (authService.isAdmin()) {
+          <mat-card class="action-card" routerLink="/admin">
+            <mat-icon color="warn">admin_panel_settings</mat-icon>
+            <h3>Dashboard Admin</h3>
+            <p>Gestisci tutte le prenotazioni</p>
+          </mat-card>
+        }
+      </div>
+    </div>
+  }
+</div>
+

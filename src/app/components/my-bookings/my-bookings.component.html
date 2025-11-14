@@ -1,0 +1,110 @@
+<div class="bookings-container">
+  <div class="header">
+    <h1>
+      <mat-icon>event_note</mat-icon>
+      Le Mie Prenotazioni
+    </h1>
+    <button mat-raised-button color="primary" (click)="navigateToNewBooking()">
+      <mat-icon>add</mat-icon>
+      Nuova Prenotazione
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else if (bookings().length === 0) {
+    <mat-card class="empty-state">
+      <mat-icon>event_busy</mat-icon>
+      <h2>Nessuna prenotazione</h2>
+      <p>Non hai ancora effettuato prenotazioni</p>
+      <button mat-raised-button color="primary" (click)="navigateToNewBooking()">
+        Crea la tua prima prenotazione
+      </button>
+    </mat-card>
+  } @else {
+    <div class="bookings-grid">
+      @for (booking of bookings(); track booking.id) {
+        <mat-card class="booking-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>home</mat-icon>
+              {{ booking.accommodation_title }}
+            </mat-card-title>
+            <mat-chip [color]="getStatusColor(booking.status)" highlighted>
+              <mat-icon>{{ getStatusIcon(booking.status) }}</mat-icon>
+              {{ getStatusLabel(booking.status) }}
+            </mat-chip>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="booking-info">
+              <div class="info-row">
+                <mat-icon>event</mat-icon>
+                <div class="info-content">
+                  <strong>Check-in:</strong>
+                  <span>{{ formatDate(booking.check_in) }}</span>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <mat-icon>event</mat-icon>
+                <div class="info-content">
+                  <strong>Check-out:</strong>
+                  <span>{{ formatDate(booking.check_out) }}</span>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <mat-icon>people</mat-icon>
+                <div class="info-content">
+                  <strong>Ospiti:</strong>
+                  <span>{{ booking.num_guests }}</span>
+                </div>
+              </div>
+
+              @if (booking.notes) {
+                <div class="info-row">
+                  <mat-icon>note</mat-icon>
+                  <div class="info-content">
+                    <strong>Note:</strong>
+                    <span>{{ booking.notes }}</span>
+                  </div>
+                </div>
+              }
+
+              @if (booking.guests_details && booking.guests_details.length > 0) {
+                <div class="guests-section">
+                  <h4>
+                    <mat-icon>person</mat-icon>
+                    Ospiti
+                  </h4>
+                  @for (guest of booking.guests_details; track guest.id) {
+                    <div class="guest-item">
+                      <span class="guest-name">{{ guest.full_name }}</span>
+                      <span class="guest-email">{{ guest.email }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions>
+            @if (booking.status === 'pending' || booking.status === 'confirmed') {
+              <button mat-button color="warn" (click)="cancelBooking(booking)">
+                <mat-icon>cancel</mat-icon>
+                Annulla
+              </button>
+            }
+            <div class="created-date">
+              Creata il {{ formatDate(booking.created_at) }}
+            </div>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
+</div>
+

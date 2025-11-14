@@ -1,0 +1,226 @@
+<div class="admin-container">
+  <h1>
+    <mat-icon>admin_panel_settings</mat-icon>
+    Dashboard Amministratore
+  </h1>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
+    <mat-tab-group>
+      <!-- Overview/Statistics Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>dashboard</mat-icon>
+          Panoramica
+        </ng-template>
+
+        <div class="tab-content">
+          <app-admin-stats></app-admin-stats>
+        </div>
+      </mat-tab>
+
+      <!-- Accommodations Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>home_work</mat-icon>
+          Alloggi ({{ accommodations().length }})
+        </ng-template>
+
+        <div class="tab-content">
+          <app-manage-accommodations></app-manage-accommodations>
+        </div>
+      </mat-tab>
+
+      <!-- Bookings Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>event_note</mat-icon>
+          Prenotazioni ({{ bookings().length }})
+        </ng-template>
+
+        <div class="tab-content">
+          @if (bookings().length === 0) {
+            <mat-card class="empty-state">
+              <mat-icon>event_busy</mat-icon>
+              <p>Nessuna prenotazione presente</p>
+            </mat-card>
+          } @else {
+            <div class="table-container">
+              <table mat-table [dataSource]="bookingsData" class="bookings-table">
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>ID</th>
+                  <td mat-cell *matCellDef="let booking">#{{ booking.id }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="accommodation">
+                  <th mat-header-cell *matHeaderCellDef>Alloggio</th>
+                  <td mat-cell *matCellDef="let booking">{{ booking.accommodation_title }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="user">
+                  <th mat-header-cell *matHeaderCellDef>Utente</th>
+                  <td mat-cell *matCellDef="let booking">{{ booking.user_email }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="check_in">
+                  <th mat-header-cell *matHeaderCellDef>Check-in</th>
+                  <td mat-cell *matCellDef="let booking">{{ formatDate(booking.check_in) }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="check_out">
+                  <th mat-header-cell *matHeaderCellDef>Check-out</th>
+                  <td mat-cell *matCellDef="let booking">{{ formatDate(booking.check_out) }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Stato</th>
+                  <td mat-cell *matCellDef="let booking">
+                    <mat-chip [color]="getStatusColor(booking.status)" highlighted>
+                      {{ getStatusLabel(booking.status) }}
+                    </mat-chip>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Azioni</th>
+                  <td mat-cell *matCellDef="let booking">
+                    @if (booking.status === 'pending') {
+                      <button mat-icon-button color="primary" (click)="confirmBooking(booking)" matTooltip="Conferma">
+                        <mat-icon>check_circle</mat-icon>
+                      </button>
+                      <button mat-icon-button color="warn" (click)="rejectBooking(booking)" matTooltip="Rifiuta">
+                        <mat-icon>cancel</mat-icon>
+                      </button>
+                    }
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="bookingsColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: bookingsColumns;"></tr>
+              </table>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Blocked Periods Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>block</mat-icon>
+          Periodi Bloccati ({{ blockedPeriods().length }})
+        </ng-template>
+
+        <div class="tab-content">
+          <div class="tab-header">
+            <button mat-raised-button color="primary" (click)="openBlockedPeriodDialog()">
+              <mat-icon>add</mat-icon>
+              Aggiungi Periodo Bloccato
+            </button>
+          </div>
+
+          @if (blockedPeriods().length === 0) {
+            <mat-card class="empty-state">
+              <mat-icon>event_available</mat-icon>
+              <p>Nessun periodo bloccato</p>
+            </mat-card>
+          } @else {
+            <div class="table-container">
+              <table mat-table [dataSource]="blockedPeriodsData" class="blocked-table">
+                <ng-container matColumnDef="accommodation">
+                  <th mat-header-cell *matHeaderCellDef>Alloggio</th>
+                  <td mat-cell *matCellDef="let period">{{ period.accommodation_title }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="start_date">
+                  <th mat-header-cell *matHeaderCellDef>Data Inizio</th>
+                  <td mat-cell *matCellDef="let period">{{ formatDate(period.start_date) }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="end_date">
+                  <th mat-header-cell *matHeaderCellDef>Data Fine</th>
+                  <td mat-cell *matCellDef="let period">{{ formatDate(period.end_date) }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="reason">
+                  <th mat-header-cell *matHeaderCellDef>Motivo</th>
+                  <td mat-cell *matCellDef="let period">{{ period.reason }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Azioni</th>
+                  <td mat-cell *matCellDef="let period">
+                    <button mat-icon-button color="warn" (click)="deleteBlockedPeriod(period)" matTooltip="Elimina">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="blockedPeriodsColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: blockedPeriodsColumns;"></tr>
+              </table>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Blocked Weekdays Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>event_busy</mat-icon>
+          Giorni Bloccati ({{ blockedWeekdays().length }})
+        </ng-template>
+
+        <div class="tab-content">
+          <div class="tab-header">
+            <button mat-raised-button color="primary" (click)="openBlockedWeekdayDialog()">
+              <mat-icon>add</mat-icon>
+              Blocca Giorno della Settimana
+            </button>
+          </div>
+
+          @if (blockedWeekdays().length === 0) {
+            <mat-card class="empty-state">
+              <mat-icon>event_available</mat-icon>
+              <p>Nessun giorno della settimana bloccato</p>
+            </mat-card>
+          } @else {
+            <div class="table-container">
+              <table mat-table [dataSource]="blockedWeekdaysData" class="blocked-table">
+                <ng-container matColumnDef="accommodation">
+                  <th mat-header-cell *matHeaderCellDef>Alloggio</th>
+                  <td mat-cell *matCellDef="let weekday">{{ weekday.accommodation_title }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="weekday">
+                  <th mat-header-cell *matHeaderCellDef>Giorno</th>
+                  <td mat-cell *matCellDef="let weekday">{{ getWeekdayName(weekday.weekday) }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="reason">
+                  <th mat-header-cell *matHeaderCellDef>Motivo</th>
+                  <td mat-cell *matCellDef="let weekday">{{ weekday.reason }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Azioni</th>
+                  <td mat-cell *matCellDef="let weekday">
+                    <button mat-icon-button color="warn" (click)="deleteBlockedWeekday(weekday)" matTooltip="Elimina">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="blockedWeekdaysColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: blockedWeekdaysColumns;"></tr>
+              </table>
+            </div>
+          }
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  }
+</div>
+

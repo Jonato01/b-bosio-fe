@@ -1,0 +1,111 @@
+<h2 mat-dialog-title>
+  <mat-icon>event_busy</mat-icon>
+  Blocca Giorno della Settimana
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Alloggio</mat-label>
+      <mat-select formControlName="accommodation">
+        @for (acc of data.accommodations; track acc.id) {
+          <mat-option [value]="acc.id">{{ acc.title }}</mat-option>
+        }
+      </mat-select>
+      <mat-icon matPrefix>home</mat-icon>
+      @if (form.get('accommodation')?.invalid && form.get('accommodation')?.touched) {
+        <mat-error>Seleziona un alloggio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Giorno della Settimana</mat-label>
+      <mat-select formControlName="weekday">
+        <mat-option [value]="0">
+          <mat-icon>calendar_today</mat-icon>
+          Lunedì
+        </mat-option>
+        <mat-option [value]="1">
+          <mat-icon>calendar_today</mat-icon>
+          Martedì
+        </mat-option>
+        <mat-option [value]="2">
+          <mat-icon>calendar_today</mat-icon>
+          Mercoledì
+        </mat-option>
+        <mat-option [value]="3">
+          <mat-icon>calendar_today</mat-icon>
+          Giovedì
+        </mat-option>
+        <mat-option [value]="4">
+          <mat-icon>calendar_today</mat-icon>
+          Venerdì
+        </mat-option>
+        <mat-option [value]="5">
+          <mat-icon>calendar_today</mat-icon>
+          Sabato
+        </mat-option>
+        <mat-option [value]="6">
+          <mat-icon>calendar_today</mat-icon>
+          Domenica
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>date_range</mat-icon>
+      @if (form.get('weekday')?.invalid && form.get('weekday')?.touched) {
+        <mat-error>Seleziona un giorno</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="time-group">
+      <mat-form-field appearance="outline" class="time-field">
+        <mat-label>Ora Inizio (opzionale)</mat-label>
+        <input matInput type="time" formControlName="start_time">
+        <mat-icon matPrefix>schedule</mat-icon>
+        <mat-hint>Lascia vuoto per tutto il giorno</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="time-field">
+        <mat-label>Ora Fine (opzionale)</mat-label>
+        <input matInput type="time" formControlName="end_time">
+        <mat-icon matPrefix>schedule</mat-icon>
+        <mat-hint>Lascia vuoto per tutto il giorno</mat-hint>
+      </mat-form-field>
+    </div>
+
+    @if (timeError()) {
+      <div class="error-message">
+        <mat-icon>error</mat-icon>
+        {{ timeError() }}
+      </div>
+    }
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Motivo</mat-label>
+      <textarea matInput formControlName="reason" rows="3"
+                placeholder="Es: Chiuso per riposo settimanale, Giorno di pulizia, etc."></textarea>
+      <mat-icon matPrefix>notes</mat-icon>
+      @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+        <mat-error>Motivo richiesto</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading()">
+    <mat-icon>close</mat-icon>
+    Annulla
+  </button>
+  <button mat-raised-button color="primary" (click)="onSubmit()"
+          [disabled]="form.invalid || loading() || !!timeError()">
+    @if (loading()) {
+      <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+      <ng-container>
+        <mat-icon>save</mat-icon>
+        Salva
+      </ng-container>
+    }
+  </button>
+</mat-dialog-actions>
+

@@ -1,0 +1,124 @@
+.booking-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.booking-card {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+mat-card-header {
+  margin-bottom: 24px;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.date-time-group {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.date-field {
+  flex: 2;
+}
+
+.time-field {
+  flex: 1;
+}
+
+.check-button {
+  margin: 24px 0;
+  height: 48px;
+  font-size: 16px;
+}
+
+.availability-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+  font-weight: 500;
+}
+
+.availability-result.available {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.availability-result.unavailable {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.guests-panel {
+  margin: 24px 0;
+}
+
+.guest-form {
+  padding: 16px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.guest-form:last-child {
+  border-bottom: none;
+}
+
+.guest-form h4 {
+  margin: 0 0 16px 0;
+  color: #666;
+  font-weight: 500;
+}
+
+.guest-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.submit-button {
+  margin-top: 24px;
+  height: 48px;
+  font-size: 16px;
+}
+
+mat-spinner {
+  margin: 0 auto;
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .date-time-group,
+  .guest-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .date-field,
+  .time-field {
+    flex: 1;
+  }
+}
+
