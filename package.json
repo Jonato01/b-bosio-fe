@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "node server.js",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
+    "postinstall": "npm run build",
     "test": "ng test"
   },
   "prettier": {
@@ -22,6 +23,7 @@
   },
   "private": true,
   "dependencies": {
+    "express": "^4.18.2",
     "@angular/animations": "^20.3.10",
     "@angular/cdk": "^20.2.12",
     "@angular/common": "^20.3.0",
