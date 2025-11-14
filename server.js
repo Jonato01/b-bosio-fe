@@ -6,7 +6,7 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'dist/bnbosio/browser')));
 
 // Tutte le richieste vanno all'index.html (per Angular routing)
-app.get('/*', (req, res) => {
+app.get(/(.*)/, (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/bnbosio/browser/index.html'));
 });
 
