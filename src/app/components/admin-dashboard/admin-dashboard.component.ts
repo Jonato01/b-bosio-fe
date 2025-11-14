@@ -16,8 +16,6 @@ import { AccommodationService } from '../../services/accommodation.service';
 import { Booking } from '../../models/booking.model';
 import { BlockedPeriod, BlockedWeekday } from '../../models/blocked-period.model';
 import { Accommodation } from '../../models/accommodation.model';
-import { BlockedPeriodDialogComponent } from '../blocked-period-dialog/blocked-period-dialog.component';
-import { BlockedWeekdayDialogComponent } from '../blocked-weekday-dialog/blocked-weekday-dialog.component';
 import { ManageAccommodationsComponent } from '../manage-accommodations/manage-accommodations.component';
 import { AdminStatsComponent } from '../admin-stats/admin-stats.component';
 
@@ -192,9 +190,10 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  openBlockedPeriodDialog(): void {
+  async openBlockedPeriodDialog(): Promise<void> {
     const accommodationsList = this.accommodations();
-    const dialogRef = this.dialog.open(BlockedPeriodDialogComponent, {
+    const module = await import('../blocked-period-dialog/blocked-period-dialog.component');
+    const dialogRef = this.dialog.open(module.BlockedPeriodDialogComponent, {
       width: '600px',
       data: { accommodations: Array.isArray(accommodationsList) ? accommodationsList : [] }
     });
@@ -206,9 +205,10 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  openBlockedWeekdayDialog(): void {
+  async openBlockedWeekdayDialog(): Promise<void> {
     const accommodationsList = this.accommodations();
-    const dialogRef = this.dialog.open(BlockedWeekdayDialogComponent, {
+    const module = await import('../blocked-weekday-dialog/blocked-weekday-dialog.component');
+    const dialogRef = this.dialog.open(module.BlockedWeekdayDialogComponent, {
       width: '600px',
       data: { accommodations: Array.isArray(accommodationsList) ? accommodationsList : [] }
     });
@@ -283,4 +283,3 @@ export class AdminDashboardComponent implements OnInit {
     return this.weekdayNames[weekday] || 'N/A';
   }
 }
-
