@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BlockedPeriod, CreateBlockedPeriodRequest, BlockedWeekday, CreateBlockedWeekdayRequest } from '../models/blocked-period.model';
 import { PaginatedResponse } from '../models/paginated-response.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlockedPeriodService {
-  private readonly API_URL = 'http://localhost:8000/api';
+  private readonly API_URL = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -59,4 +60,3 @@ export class BlockedPeriodService {
     return this.http.delete<void>(`${this.API_URL}/blocked-weekdays/${id}/`);
   }
 }
-

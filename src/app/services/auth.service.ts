@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { User, LoginRequest, LoginResponse, RegisterRequest } from '../models/user.model';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8000/api';
+  // usa l'URL centralizzato dagli environment
+  private readonly API_URL = environment.apiUrl || '/api';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -108,4 +110,3 @@ export class AuthService {
     return user?.role_name === 'admin' || user?.role_name === 'manager';
   }
 }
-

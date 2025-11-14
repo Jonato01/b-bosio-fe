@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Accommodation, AvailabilityCheck } from '../models/accommodation.model';
 import { PaginatedResponse } from '../models/paginated-response.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccommodationService {
-  private readonly API_URL = 'http://localhost:8000/api/accommodations';
+  private readonly API_URL = `${environment.apiUrl}/accommodations`;
 
   constructor(private http: HttpClient) {}
 
@@ -43,4 +44,3 @@ export class AccommodationService {
     return this.http.delete<void>(`${this.API_URL}/${slug}/`);
   }
 }
-

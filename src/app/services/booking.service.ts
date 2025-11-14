@@ -3,12 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Booking, CreateBookingRequest, BookingAuditLog } from '../models/booking.model';
 import { PaginatedResponse } from '../models/paginated-response.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookingService {
-  private readonly API_URL = 'http://localhost:8000/api/bookings';
+  private readonly API_URL = `${environment.apiUrl}/bookings`;
 
   constructor(private http: HttpClient) {}
 
@@ -65,7 +66,6 @@ export class BookingService {
   }
 
   getMyBookings(): Observable<Booking[]> {
-    return this.http.get<Booking[]>('http://localhost:8000/api/users/my_bookings/');
+    return this.http.get<Booking[]>(`${environment.apiUrl}/users/my_bookings/`);
   }
 }
-
