@@ -8,7 +8,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BookingService } from '../../services/booking.service';
+import { ReviewService } from '../../services/review.service';
+import { PaidServiceService } from '../../services/paid-service.service';
 import { Booking } from '../../models/booking.model';
+import { Review } from '../../models/review.model';
+import { PaidService } from '../../models/paid-service.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -29,16 +33,23 @@ import { Router } from '@angular/router';
 })
 export class MyBookingsComponent implements OnInit {
   bookings = signal<Booking[]>([]);
+  userReviews = signal<Review[]>([]);
+  allServices = signal<PaidService[]>([]);
   loading = signal(true);
 
   constructor(
     private bookingService: BookingService,
+    private reviewService: ReviewService,
+    private paidServiceService: PaidServiceService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadBookings();
+    this.loadReviews();
+    this.paidServiceService.getPaidServices().subscribe(s => this.allServices.set(s));
   }
 
   private loadBookings(): void {
@@ -53,6 +64,46 @@ export class MyBookingsComponent implements OnInit {
         this.snackBar.open('Errore nel caricamento delle prenotazioni', 'Chiudi', { duration: 3000 });
       }
     });
+  }
+
+  private loadReviews(): void {
+    this.reviewService.getReviews().subscribe({
+      next: (data) => {
+        this.userReviews.set(data);
+      },
+      error: () => {
+        // Silent fail - reviews are supplementary
+      }
+    });
+  }
+
+  hasReview(bookingId: number): boolean {
+    return this.userReviews().some(review => review.booking === bookingId);
+  }
+
+  canReview(booking: Booking): boolean {
+    return booking.status === 'confirmed' && new Date(booking.check_out) < new Date();
+  }
+
+  async openReviewDialog(booking: Booking): Promise<void> {
+    const { ReviewDialogComponent } = await import('../review-dialog/review-dialog.component');
+    const dialogRef = this.dialog.open(ReviewDialogComponent, {
+      data: {
+        bookingId: booking.id,
+        accommodationTitle: booking.accommodation_title
+      },
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadReviews();
+      }
+    });
+  }
+
+  getServiceNames(serviceIds: number[]): PaidService[] {
+    return this.allServices().filter(s => serviceIds.includes(s.id));
   }
 
   getStatusColor(status: string): string {

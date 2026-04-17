@@ -1,0 +1,57 @@
+<div class="manage-container">
+  <div class="header">
+    <h2>
+      <mat-icon>photo_library</mat-icon>
+      Gestione Foto
+    </h2>
+  </div>
+
+  <div class="toolbar">
+    <mat-form-field appearance="outline" class="filter-select">
+      <mat-label>Filtra per alloggio</mat-label>
+      <mat-select [value]="selectedAccommodation()"
+                  (selectionChange)="onAccommodationChange($event.value)">
+        <mat-option [value]="null">Tutti</mat-option>
+        @for (acc of accommodations(); track acc.id) {
+          <mat-option [value]="acc.id">{{ acc.title }}</mat-option>
+        }
+      </mat-select>
+      <mat-icon matPrefix>filter_list</mat-icon>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="openUploadDialog()">
+      <mat-icon>cloud_upload</mat-icon>
+      Carica Foto
+    </button>
+  </div>
+
+  <div class="photos-section">
+    @if (loading()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else if (photos().length === 0) {
+      <div class="empty-state">
+        <mat-icon>photo_library</mat-icon>
+        <p>Nessuna foto</p>
+      </div>
+    } @else {
+      <div class="photos-grid">
+        @for (photo of photos(); track photo.id) {
+          <div class="photo-card">
+            <img [src]="photo.url" [alt]="photo.caption || 'Foto'" loading="lazy">
+            <button mat-icon-button class="delete-btn" (click)="deletePhoto(photo)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            @if (photo.caption) {
+              <div class="photo-caption">{{ photo.caption }}</div>
+            }
+            @if (photo.accommodation_title) {
+              <div class="photo-accommodation">{{ photo.accommodation_title }}</div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

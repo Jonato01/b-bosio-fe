@@ -3,7 +3,7 @@
   justify-content: center;
   padding: 24px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: transparent;
 }
 
 .booking-card {
@@ -60,13 +60,13 @@ mat-card-title {
 }
 
 .availability-result.available {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background: rgba(121, 85, 72, 0.1);
+  color: #6d4c41;
 }
 
 .availability-result.unavailable {
-  background-color: #ffebee;
-  color: #c62828;
+  background: rgba(141, 110, 99, 0.15);
+  color: #8d6e63;
 }
 
 .guests-panel {
@@ -75,7 +75,7 @@ mat-card-title {
 
 .guest-form {
   padding: 16px 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .guest-form:last-child {
@@ -84,7 +84,7 @@ mat-card-title {
 
 .guest-form h4 {
   margin: 0 0 16px 0;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -107,6 +107,85 @@ mat-card-title {
 mat-spinner {
   margin: 0 auto;
   display: inline-block;
+}
+
+.photos-preview {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 0 0 16px;
+  padding: 4px 0;
+}
+
+.photos-preview img {
+  width: 180px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.services-selection {
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.services-selection h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.service-checkbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.service-checkbox:last-of-type {
+  border-bottom: none;
+}
+
+.service-name {
+  color: var(--text-primary);
+}
+
+.service-desc {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.service-price {
+  color: var(--accent-color);
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 16px;
+}
+
+.services-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0 0;
+  margin-top: 8px;
+  border-top: 2px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.services-total span {
+  color: var(--accent-color);
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {

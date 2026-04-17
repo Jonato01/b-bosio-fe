@@ -92,7 +92,7 @@ mat-card-title mat-icon {
   font-size: 16px;
 }
 
-.accommodation-item {
+.service-item {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -102,41 +102,46 @@ mat-card-title mat-icon {
   transition: background-color 0.2s ease;
 }
 
-.accommodation-item:hover {
+.service-item:hover {
   background-color: var(--bg-elevated);
 }
 
-.accommodation-info {
+.service-info {
   flex: 1;
 }
 
-.accommodation-info h3 {
+.service-info h3 {
   margin: 0 0 8px 0;
   font-size: 18px;
   font-weight: 500;
   color: var(--text-primary);
 }
 
-.accommodation-info .slug {
-  font-size: 12px;
-  font-family: monospace;
+.service-info .price {
+  font-size: 14px;
+  font-weight: 600;
   background: var(--bg-elevated);
   color: var(--accent-color);
   padding: 4px 12px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
   display: inline-block;
-  margin-bottom: 8px;
 }
 
-.accommodation-info .description {
+.service-info .accommodation-name {
   margin: 8px 0 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.service-info .description {
+  margin: 4px 0 0 0;
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.6;
 }
 
-.accommodation-actions {
+.service-actions {
   display: flex;
   gap: 8px;
   margin-left: 16px;
@@ -167,12 +172,12 @@ button mat-icon {
     padding: 16px;
   }
 
-  .accommodation-item {
+  .service-item {
     flex-direction: column;
     gap: 12px;
   }
 
-  .accommodation-actions {
+  .service-actions {
     margin-left: 0;
     justify-content: flex-end;
     width: 100%;

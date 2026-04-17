@@ -14,8 +14,8 @@ h2[mat-dialog-title] {
   gap: 8px;
   margin: 0;
   padding: 16px 24px;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
   border-radius: 4px 4px 0 0;
 }
 
@@ -46,8 +46,8 @@ h2[mat-dialog-title] mat-icon {
   gap: 8px;
   padding: 12px;
   margin-bottom: 16px;
-  background-color: #ffebee;
-  color: #c62828;
+  background: rgba(198, 40, 40, 0.15);
+  color: #8d6e63;
   border-radius: 4px;
   font-size: 14px;
 }
@@ -60,7 +60,7 @@ h2[mat-dialog-title] mat-icon {
 
 mat-dialog-actions {
   padding: 16px 24px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-color);
   gap: 8px;
 }
 

@@ -1,0 +1,81 @@
+<div class="detail-container">
+  @if (loading()) {
+    <div class="loading-container"><mat-spinner></mat-spinner></div>
+  } @else if (accommodation()) {
+    <!-- Hero section with photos -->
+    @if (accommodation()!.photos && accommodation()!.photos!.length > 0) {
+      <div class="photos-gallery">
+        @for (photo of accommodation()!.photos!; track photo.id) {
+          <div class="photo-item">
+            <img [src]="photo.url" [alt]="photo.caption || accommodation()!.title">
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Info section -->
+    <div class="info-section">
+      <h1>{{ accommodation()!.title }}</h1>
+
+      <!-- Rating -->
+      @if (accommodation()!.average_rating !== null && accommodation()!.average_rating !== undefined) {
+        <div class="rating-summary">
+          <div class="stars">
+            @for (filled of getStarArray(accommodation()!.average_rating!); track $index) {
+              <mat-icon>{{ filled ? 'star' : 'star_border' }}</mat-icon>
+            }
+          </div>
+          <span class="rating-text">{{ accommodation()!.average_rating }}/5 ({{ accommodation()!.review_count }} recensioni)</span>
+        </div>
+      }
+
+      @if (accommodation()!.description) {
+        <p class="description">{{ accommodation()!.description }}</p>
+      }
+    </div>
+
+    <!-- Paid Services -->
+    @if (accommodation()!.paid_services && accommodation()!.paid_services!.length > 0) {
+      <div class="services-section">
+        <h2><mat-icon>room_service</mat-icon> Servizi Disponibili</h2>
+        <div class="services-grid">
+          @for (service of accommodation()!.paid_services!; track service.id) {
+            <mat-card class="service-card">
+              <h3>{{ service.name }}</h3>
+              @if (service.description) {
+                <p>{{ service.description }}</p>
+              }
+              <span class="price">{{ service.price }}&euro;</span>
+            </mat-card>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Reviews -->
+    <div class="reviews-section">
+      <h2><mat-icon>reviews</mat-icon> Recensioni</h2>
+      @if (reviews().length === 0) {
+        <p class="no-reviews">Nessuna recensione ancora.</p>
+      }
+      @for (review of reviews(); track review.id) {
+        <mat-card class="review-card">
+          <div class="review-header">
+            <div class="reviewer">
+              <strong>{{ review.user_display_name || review.user_email }}</strong>
+              <span class="review-date">{{ formatDate(review.created_at) }}</span>
+            </div>
+            <div class="review-stars">
+              @for (filled of getStarArray(review.rating); track $index) {
+                <mat-icon>{{ filled ? 'star' : 'star_border' }}</mat-icon>
+              }
+            </div>
+          </div>
+          @if (review.comment) {
+            <p class="review-comment">{{ review.comment }}</p>
+          }
+        </mat-card>
+      }
+    </div>
+  }
+</div>

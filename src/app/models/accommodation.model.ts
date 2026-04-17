@@ -1,8 +1,15 @@
+import { PaidService } from './paid-service.model';
+import { Photo } from './photo.model';
+
 export interface Accommodation {
   id: number;
   slug: string;
   title: string;
   description: string;
+  paid_services?: PaidService[];
+  photos?: Photo[];
+  average_rating?: number | null;
+  review_count?: number;
   created_at: string;
   updated_at: string;
 }

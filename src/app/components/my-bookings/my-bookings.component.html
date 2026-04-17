@@ -74,6 +74,17 @@
                 </div>
               }
 
+              @if (booking.selected_services?.length) {
+                <div class="selected-services">
+                  <h4><mat-icon>room_service</mat-icon> Servizi</h4>
+                  @for (service of getServiceNames(booking.selected_services!); track service.id) {
+                    <div class="service-tag">
+                      {{ service.name }} <span>{{ service.price }}&euro;</span>
+                    </div>
+                  }
+                </div>
+              }
+
               @if (booking.guests_details && booking.guests_details.length > 0) {
                 <div class="guests-section">
                   <h4>
@@ -92,12 +103,26 @@
           </mat-card-content>
 
           <mat-card-actions>
-            @if (booking.status === 'pending' || booking.status === 'confirmed') {
-              <button mat-button color="warn" (click)="cancelBooking(booking)">
-                <mat-icon>cancel</mat-icon>
-                Annulla
-              </button>
-            }
+            <div class="actions-left">
+              @if (canReview(booking) && !hasReview(booking.id)) {
+                <button mat-raised-button color="primary" (click)="openReviewDialog(booking)">
+                  <mat-icon>rate_review</mat-icon>
+                  Recensione
+                </button>
+              }
+              @if (hasReview(booking.id)) {
+                <span class="reviewed-badge">
+                  <mat-icon>check_circle</mat-icon>
+                  Recensito
+                </span>
+              }
+              @if (booking.status === 'pending' || booking.status === 'confirmed') {
+                <button mat-button color="warn" (click)="cancelBooking(booking)">
+                  <mat-icon>cancel</mat-icon>
+                  Annulla
+                </button>
+              }
+            </div>
             <div class="created-date">
               Creata il {{ formatDate(booking.created_at) }}
             </div>

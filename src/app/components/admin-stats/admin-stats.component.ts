@@ -6,8 +6,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BookingService } from '../../services/booking.service';
 import { AccommodationService } from '../../services/accommodation.service';
 import { BlockedPeriodService } from '../../services/blocked-period.service';
-import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 
 interface Statistics {
   totalBookings: number;
@@ -27,8 +25,7 @@ interface Statistics {
     CommonModule,
     MatCardModule,
     MatIconModule,
-    MatProgressSpinnerModule,
-    MatButtonModule
+    MatProgressSpinnerModule
   ],
   template: `
     <div class="stats-container">
@@ -38,7 +35,7 @@ interface Statistics {
         </div>
       } @else {
         <div class="stats-grid">
-          <mat-card class="stat-card bookings" (click)="navigateTo('bookings')">
+          <mat-card class="stat-card">
             <div class="stat-icon">
               <mat-icon>event_note</mat-icon>
             </div>
@@ -48,7 +45,7 @@ interface Statistics {
             </div>
           </mat-card>
 
-          <mat-card class="stat-card pending" (click)="navigateTo('bookings')">
+          <mat-card class="stat-card">
             <div class="stat-icon">
               <mat-icon>schedule</mat-icon>
             </div>
@@ -58,7 +55,7 @@ interface Statistics {
             </div>
           </mat-card>
 
-          <mat-card class="stat-card confirmed" (click)="navigateTo('bookings')">
+          <mat-card class="stat-card">
             <div class="stat-icon">
               <mat-icon>check_circle</mat-icon>
             </div>
@@ -68,7 +65,7 @@ interface Statistics {
             </div>
           </mat-card>
 
-          <mat-card class="stat-card accommodations" (click)="navigateTo('accommodations')">
+          <mat-card class="stat-card">
             <div class="stat-icon">
               <mat-icon>home_work</mat-icon>
             </div>
@@ -78,7 +75,7 @@ interface Statistics {
             </div>
           </mat-card>
 
-          <mat-card class="stat-card blocked-periods" (click)="navigateTo('blocked-periods')">
+          <mat-card class="stat-card">
             <div class="stat-icon">
               <mat-icon>block</mat-icon>
             </div>
@@ -88,7 +85,7 @@ interface Statistics {
             </div>
           </mat-card>
 
-          <mat-card class="stat-card blocked-weekdays" (click)="navigateTo('blocked-weekdays')">
+          <mat-card class="stat-card">
             <div class="stat-icon">
               <mat-icon>event_busy</mat-icon>
             </div>
@@ -97,24 +94,6 @@ interface Statistics {
               <p class="stat-number">{{ stats().blockedWeekdays }}</p>
             </div>
           </mat-card>
-        </div>
-
-        <div class="quick-actions">
-          <h2>Azioni Rapide</h2>
-          <div class="actions-grid">
-            <button mat-raised-button color="primary" (click)="navigateTo('bookings')">
-              <mat-icon>visibility</mat-icon>
-              Vedi Tutte le Prenotazioni
-            </button>
-            <button mat-raised-button color="accent" (click)="navigateTo('accommodations')">
-              <mat-icon>add</mat-icon>
-              Gestisci Alloggi
-            </button>
-            <button mat-raised-button (click)="navigateTo('blocked-periods')">
-              <mat-icon>event_busy</mat-icon>
-              Gestisci Disponibilità
-            </button>
-          </div>
         </div>
       }
     </div>
@@ -142,43 +121,9 @@ interface Statistics {
       align-items: center;
       gap: 20px;
       padding: 24px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    }
-
-    .stat-card.bookings {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-
-    .stat-card.pending {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      color: white;
-    }
-
-    .stat-card.confirmed {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      color: white;
-    }
-
-    .stat-card.accommodations {
-      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-      color: white;
-    }
-
-    .stat-card.blocked-periods {
-      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-      color: white;
-    }
-
-    .stat-card.blocked-weekdays {
-      background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
-      color: white;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      cursor: default;
     }
 
     .stat-icon {
@@ -191,6 +136,7 @@ interface Statistics {
       font-size: 48px;
       width: 48px;
       height: 48px;
+      color: var(--accent-color);
     }
 
     .stat-content h3 {
@@ -199,45 +145,19 @@ interface Statistics {
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      opacity: 0.9;
+      color: var(--text-secondary);
     }
 
     .stat-number {
       margin: 0;
       font-size: 32px;
       font-weight: 700;
-    }
-
-    .quick-actions {
-      margin-top: 40px;
-    }
-
-    .quick-actions h2 {
-      font-size: 24px;
-      margin: 0 0 24px 0;
-      color: #333;
-    }
-
-    .actions-grid {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .actions-grid button {
-      flex: 1;
-      min-width: 200px;
-      height: 56px;
-      font-size: 16px;
+      color: var(--text-primary);
     }
 
     @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: 1fr;
-      }
-
-      .actions-grid button {
-        width: 100%;
       }
     }
   `]
@@ -258,8 +178,7 @@ export class AdminStatsComponent implements OnInit {
   constructor(
     private bookingService: BookingService,
     private accommodationService: AccommodationService,
-    private blockedPeriodService: BlockedPeriodService,
-    private router: Router
+    private blockedPeriodService: BlockedPeriodService
   ) {}
 
   ngOnInit(): void {
@@ -340,11 +259,6 @@ export class AdminStatsComponent implements OnInit {
         })
       ]).then(() => resolve());
     });
-  }
-
-  navigateTo(section: string): void {
-    // Le tab sono gestite dalla dashboard parent, questa è solo una visualizzazione
-    // Puoi emettere un evento per cambiare tab se necessario
   }
 }
 

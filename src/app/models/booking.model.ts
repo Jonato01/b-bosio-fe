@@ -24,6 +24,7 @@ export interface Booking {
   num_guests: number;
   status: 'pending' | 'confirmed' | 'cancelled' | 'rejected';
   notes?: string;
+  selected_services?: number[];
   created_at: string;
   updated_at: string;
   guests_details?: BookingGuest[];
@@ -36,6 +37,7 @@ export interface CreateBookingRequest {
   check_out: string;
   num_guests: number;
   notes?: string;
+  selected_services?: number[];
   guests_data?: GuestData[];
 }
 

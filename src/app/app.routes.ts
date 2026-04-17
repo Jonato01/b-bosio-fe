@@ -5,6 +5,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { CreateBookingComponent } from './components/create-booking/create-booking.component';
 import { MyBookingsComponent } from './components/my-bookings/my-bookings.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { AccommodationDetailComponent } from './components/accommodation-detail/accommodation-detail.component';
 import { authGuard, adminGuard, guestGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -14,5 +15,6 @@ export const routes: Routes = [
   { path: 'bookings/new', component: CreateBookingComponent, canActivate: [authGuard] },
   { path: 'my-bookings', component: MyBookingsComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminDashboardComponent, canActivate: [adminGuard] },
+  { path: 'accommodations/:slug', component: AccommodationDetailComponent },
   { path: '**', redirectTo: '' }
 ];

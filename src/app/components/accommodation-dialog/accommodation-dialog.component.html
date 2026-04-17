@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>
+  <mat-icon>home</mat-icon>
+  @if (data) {
+    Modifica Alloggio
+  } @else {
+    Nuovo Alloggio
+  }
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Slug (URL)</mat-label>
+      <input matInput formControlName="slug" placeholder="villa-mare">
+      <mat-icon matPrefix>link</mat-icon>
+      <mat-hint>Solo lettere minuscole, numeri e trattini</mat-hint>
+      @if (form.get('slug')?.invalid && form.get('slug')?.touched) {
+        <mat-error>
+          @if (form.get('slug')?.errors?.['required']) {
+            Slug richiesto
+          } @else if (form.get('slug')?.errors?.['pattern']) {
+            Solo lettere minuscole, numeri e trattini
+          }
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Titolo</mat-label>
+      <input matInput formControlName="title" placeholder="Villa al Mare">
+      <mat-icon matPrefix>title</mat-icon>
+      @if (form.get('title')?.invalid && form.get('title')?.touched) {
+        <mat-error>Titolo richiesto</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descrizione</mat-label>
+      <textarea matInput formControlName="description" rows="4"
+                placeholder="Descrizione dell'alloggio..."></textarea>
+      <mat-icon matPrefix>description</mat-icon>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading()">
+    <mat-icon>close</mat-icon>
+    Annulla
+  </button>
+  <button mat-raised-button color="primary" (click)="onSubmit()"
+          [disabled]="form.invalid || loading()">
+    @if (loading()) {
+      <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+      <ng-container>
+        <mat-icon>save</mat-icon>
+        Salva
+      </ng-container>
+    }
+  </button>
+</mat-dialog-actions>

@@ -9,11 +9,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PaidServiceService } from '../../services/paid-service.service';
 import { AccommodationService } from '../../services/accommodation.service';
+import { PaidService } from '../../models/paid-service.model';
 import { Accommodation } from '../../models/accommodation.model';
 
 @Component({
-  selector: 'app-manage-accommodations',
+  selector: 'app-manage-paid-services',
   standalone: true,
   imports: [
     CommonModule,
@@ -27,10 +29,16 @@ import { Accommodation } from '../../models/accommodation.model';
     MatTooltipModule,
     MatDialogModule
   ],
-  templateUrl: './manage-accommodations.component.html',
-  styleUrls: ['./manage-accommodations.component.css']
+  templateUrl: './manage-paid-services.component.html',
+  styleUrls: ['./manage-paid-services.component.css']
 })
-export class ManageAccommodationsComponent implements OnInit {
+export class ManagePaidServicesComponent implements OnInit {
+  private _paidServices = signal<PaidService[]>([]);
+  paidServices = computed(() => {
+    const data = this._paidServices();
+    return Array.isArray(data) ? data : [];
+  });
+
   private _accommodations = signal<Accommodation[]>([]);
   accommodations = computed(() => {
     const data = this._accommodations();
@@ -40,6 +48,7 @@ export class ManageAccommodationsComponent implements OnInit {
   loading = signal(false);
 
   constructor(
+    private paidServiceService: PaidServiceService,
     private accommodationService: AccommodationService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
@@ -47,48 +56,66 @@ export class ManageAccommodationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAccommodations();
+    this.loadPaidServices();
   }
 
-  openDialog(accommodation?: Accommodation): void {
-    import('../accommodation-dialog/accommodation-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.AccommodationDialogComponent, {
-        data: accommodation || null,
+  openDialog(service?: PaidService): void {
+    import('../paid-service-dialog/paid-service-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.PaidServiceDialogComponent, {
+        data: { service: service || null, accommodations: this.accommodations() },
         width: '600px'
       });
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.loadAccommodations();
+          this.loadPaidServices();
         }
       });
     });
   }
 
-  deleteAccommodation(accommodation: Accommodation): void {
-    if (confirm(`Sei sicuro di voler eliminare "${accommodation.title}"?`)) {
-      this.accommodationService.deleteAccommodation(accommodation.slug).subscribe({
+  deleteService(service: PaidService): void {
+    if (confirm(`Sei sicuro di voler eliminare "${service.name}"?`)) {
+      this.paidServiceService.deletePaidService(service.id).subscribe({
         next: () => {
-          this.snackBar.open('Alloggio eliminato', 'Chiudi', { duration: 3000 });
-          this.loadAccommodations();
+          this.snackBar.open('Servizio eliminato', 'Chiudi', { duration: 3000 });
+          this.loadPaidServices();
         },
         error: () => {
-          this.snackBar.open('Errore nell\'eliminazione dell\'alloggio', 'Chiudi', { duration: 3000 });
+          this.snackBar.open('Errore nell\'eliminazione del servizio', 'Chiudi', { duration: 3000 });
         }
       });
     }
   }
 
+  getAccommodationTitle(accommodationId: number): string {
+    const accommodation = this.accommodations().find(a => a.id === accommodationId);
+    return accommodation ? accommodation.title : 'N/A';
+  }
+
   private loadAccommodations(): void {
-    this.loading.set(true);
     this.accommodationService.getAccommodations().subscribe({
       next: (data) => {
         this._accommodations.set(Array.isArray(data) ? data : []);
+      },
+      error: () => {
+        this._accommodations.set([]);
+        this.snackBar.open('Errore nel caricamento degli alloggi', 'Chiudi', { duration: 3000 });
+      }
+    });
+  }
+
+  private loadPaidServices(): void {
+    this.loading.set(true);
+    this.paidServiceService.getPaidServices().subscribe({
+      next: (data) => {
+        this._paidServices.set(Array.isArray(data) ? data : []);
         this.loading.set(false);
       },
       error: () => {
         this.loading.set(false);
-        this._accommodations.set([]);
-        this.snackBar.open('Errore nel caricamento degli alloggi', 'Chiudi', { duration: 3000 });
+        this._paidServices.set([]);
+        this.snackBar.open('Errore nel caricamento dei servizi', 'Chiudi', { duration: 3000 });
       }
     });
   }

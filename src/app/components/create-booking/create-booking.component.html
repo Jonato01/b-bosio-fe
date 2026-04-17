@@ -25,11 +25,42 @@
           }
         </mat-form-field>
 
+        @if (selectedAccommodation()?.photos?.length) {
+          <div class="photos-preview">
+            @for (photo of selectedAccommodation()!.photos!; track photo.id) {
+              <img [src]="photo.url" [alt]="photo.caption || selectedAccommodation()!.title">
+            }
+          </div>
+        }
+
+        @if (selectedAccommodation()?.paid_services?.length) {
+          <div class="services-selection">
+            <h4><mat-icon>room_service</mat-icon> Servizi Aggiuntivi</h4>
+            @for (service of selectedAccommodation()!.paid_services!; track service.id) {
+              <div class="service-checkbox" (click)="toggleService(service.id)">
+                <mat-checkbox [checked]="isServiceSelected(service.id)" color="primary">
+                  <span class="service-name">{{ service.name }}</span>
+                  @if (service.description) {
+                    <span class="service-desc">{{ service.description }}</span>
+                  }
+                </mat-checkbox>
+                <span class="service-price">{{ service.price }}&euro;</span>
+              </div>
+            }
+            @if (getServicesTotal() > 0) {
+              <div class="services-total">
+                <strong>Totale servizi:</strong>
+                <span>{{ getServicesTotal() }}&euro;</span>
+              </div>
+            }
+          </div>
+        }
+
         <!-- Check-in Date & Time -->
         <div class="date-time-group">
           <mat-form-field appearance="outline" class="date-field">
             <mat-label>Data Check-in</mat-label>
-            <input matInput [matDatepicker]="checkinPicker" formControlName="check_in_date" [min]="minDate">
+            <input matInput [matDatepicker]="checkinPicker" formControlName="check_in_date" [min]="minDate" [matDatepickerFilter]="dateFilter">
             <mat-datepicker-toggle matSuffix [for]="checkinPicker"></mat-datepicker-toggle>
             <mat-datepicker #checkinPicker></mat-datepicker>
             @if (bookingForm.get('check_in_date')?.invalid && bookingForm.get('check_in_date')?.touched) {
@@ -48,7 +79,7 @@
         <div class="date-time-group">
           <mat-form-field appearance="outline" class="date-field">
             <mat-label>Data Check-out</mat-label>
-            <input matInput [matDatepicker]="checkoutPicker" formControlName="check_out_date" [min]="minDate">
+            <input matInput [matDatepicker]="checkoutPicker" formControlName="check_out_date" [min]="minDate" [matDatepickerFilter]="dateFilter">
             <mat-datepicker-toggle matSuffix [for]="checkoutPicker"></mat-datepicker-toggle>
             <mat-datepicker #checkoutPicker></mat-datepicker>
             @if (bookingForm.get('check_out_date')?.invalid && bookingForm.get('check_out_date')?.touched) {

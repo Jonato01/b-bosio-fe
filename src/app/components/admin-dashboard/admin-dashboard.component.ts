@@ -18,6 +18,8 @@ import { BlockedPeriod, BlockedWeekday } from '../../models/blocked-period.model
 import { Accommodation } from '../../models/accommodation.model';
 import { ManageAccommodationsComponent } from '../manage-accommodations/manage-accommodations.component';
 import { AdminStatsComponent } from '../admin-stats/admin-stats.component';
+import { ManagePaidServicesComponent } from '../manage-paid-services/manage-paid-services.component';
+import { ManagePhotosComponent } from '../manage-photos/manage-photos.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -35,7 +37,9 @@ import { AdminStatsComponent } from '../admin-stats/admin-stats.component';
     MatDialogModule,
     MatTooltipModule,
     ManageAccommodationsComponent,
-    AdminStatsComponent
+    AdminStatsComponent,
+    ManagePaidServicesComponent,
+    ManagePhotosComponent
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']

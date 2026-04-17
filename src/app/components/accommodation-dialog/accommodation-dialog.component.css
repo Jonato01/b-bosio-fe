@@ -30,38 +30,6 @@ h2[mat-dialog-title] mat-icon {
   margin-bottom: 16px;
 }
 
-.date-row {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.date-field {
-  flex: 2;
-}
-
-.time-field {
-  flex: 1;
-}
-
-.error-message {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
-  margin-bottom: 16px;
-  background: rgba(198, 40, 40, 0.15);
-  color: #8d6e63;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.error-message mat-icon {
-  font-size: 20px;
-  height: 20px;
-  width: 20px;
-}
-
 mat-dialog-actions {
   padding: 16px 24px;
   border-top: 1px solid var(--border-color);
@@ -85,21 +53,9 @@ form {
   flex-direction: column;
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   mat-dialog-content {
     min-width: auto;
     max-width: 100%;
   }
-
-  .date-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .date-field,
-  .time-field {
-    flex: 1;
-  }
 }
-

@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>
+  <mat-icon>photo_library</mat-icon>
+  Carica Foto
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Alloggio</mat-label>
+      <mat-select formControlName="accommodation">
+        @for (acc of data.accommodations; track acc.id) {
+          <mat-option [value]="acc.id">{{ acc.title }}</mat-option>
+        }
+      </mat-select>
+      <mat-icon matPrefix>home</mat-icon>
+      @if (form.get('accommodation')?.invalid && form.get('accommodation')?.touched) {
+        <mat-error>Seleziona un alloggio</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="file-input-wrapper">
+      <label class="file-label">Immagine</label>
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" class="file-input">
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Didascalia (opzionale)</mat-label>
+      <input matInput formControlName="caption" placeholder="Descrizione della foto...">
+      <mat-icon matPrefix>short_text</mat-icon>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading()">
+    <mat-icon>close</mat-icon>
+    Annulla
+  </button>
+  <button mat-raised-button color="primary" (click)="onSubmit()"
+          [disabled]="form.invalid || !selectedFile() || loading()">
+    @if (loading()) {
+      <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+      <ng-container>
+        <mat-icon>cloud_upload</mat-icon>
+        Carica
+      </ng-container>
+    }
+  </button>
+</mat-dialog-actions>

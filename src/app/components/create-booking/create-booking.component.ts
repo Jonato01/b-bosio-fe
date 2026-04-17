@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AccommodationService } from '../../services/accommodation.service';
 import { BookingService } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
@@ -35,7 +36,8 @@ import { CreateBookingRequest } from '../../models/booking.model';
     MatIconModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatCheckboxModule
   ],
   templateUrl: './create-booking.component.html',
   styleUrls: ['./create-booking.component.css']
@@ -44,9 +46,12 @@ export class CreateBookingComponent implements OnInit {
   bookingForm: FormGroup;
   accommodations = signal<Accommodation[]>([]);
   loading = signal(false);
+  selectedAccommodation = signal<Accommodation | null>(null);
   checkingAvailability = signal(false);
   availabilityChecked = signal(false);
   isAvailable = signal(false);
+  selectedServices = signal<number[]>([]);
+  unavailableDates = signal<Set<string>>(new Set());
   minDate = new Date();
 
   constructor(
@@ -66,6 +71,18 @@ export class CreateBookingComponent implements OnInit {
       num_guests: [1, [Validators.required, Validators.min(1)]],
       notes: [''],
       guests_data: this.fb.array([])
+    });
+
+    // Watch accommodation changes to update selected accommodation
+    this.bookingForm.get('accommodation')?.valueChanges.subscribe(value => {
+      const acc = this.accommodations().find(a => a.id === value) || null;
+      this.selectedAccommodation.set(acc);
+      this.selectedServices.set([]);
+      if (acc) {
+        this.loadCalendar(acc.slug);
+      } else {
+        this.unavailableDates.set(new Set());
+      }
     });
 
     // Watch num_guests changes to update guests array
@@ -112,6 +129,45 @@ export class CreateBookingComponent implements OnInit {
       next: (data) => this.accommodations.set(data),
       error: () => this.snackBar.open('Errore nel caricamento degli alloggi', 'Chiudi', { duration: 3000 })
     });
+  }
+
+  loadCalendar(slug: string): void {
+    const now = new Date();
+    const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    this.accommodationService.getCalendar(slug, month).subscribe({
+      next: (data) => {
+        const dates = new Set<string>([...data.booked_dates, ...data.blocked_dates]);
+        this.unavailableDates.set(dates);
+      },
+      error: () => {}
+    });
+  }
+
+  dateFilter = (date: Date | null): boolean => {
+    if (!date) return true;
+    const dateStr = date.toISOString().split('T')[0];
+    return !this.unavailableDates().has(dateStr);
+  };
+
+  toggleService(serviceId: number): void {
+    const current = this.selectedServices();
+    if (current.includes(serviceId)) {
+      this.selectedServices.set(current.filter(id => id !== serviceId));
+    } else {
+      this.selectedServices.set([...current, serviceId]);
+    }
+  }
+
+  isServiceSelected(serviceId: number): boolean {
+    return this.selectedServices().includes(serviceId);
+  }
+
+  getServicesTotal(): number {
+    const acc = this.selectedAccommodation();
+    if (!acc?.paid_services) return 0;
+    return acc.paid_services
+      .filter(s => this.selectedServices().includes(s.id))
+      .reduce((sum, s) => sum + Number(s.price), 0);
   }
 
   checkAvailability(): void {
@@ -196,6 +252,7 @@ export class CreateBookingComponent implements OnInit {
         check_out: checkOut,
         num_guests: formValue.num_guests,
         notes: formValue.notes || undefined,
+        selected_services: this.selectedServices().length > 0 ? this.selectedServices() : undefined,
         guests_data: cleanedGuestsData.length > 0 ? cleanedGuestsData : []
       };
 
@@ -204,11 +261,22 @@ export class CreateBookingComponent implements OnInit {
       this.bookingService.createBooking(bookingData).subscribe({
         next: () => {
           this.loading.set(false);
-          this.snackBar.open('Prenotazione creata con successo!', 'Chiudi', { duration: 3000 });
+          const ref = this.snackBar.open(
+            'Prenotazione creata! Ti piace B&Bosio? Supportaci!',
+            'Dona 0.01€',
+            { duration: 8000 }
+          );
+          ref.onAction().subscribe(() => {
+            window.open(
+              'https://www.paypal.com/donate/?business=renatogioana@icloud.com&amount=0.01&currency_code=EUR&item_name=Donazione+B%26Bosio',
+              '_blank'
+            );
+          });
           this.bookingForm.reset();
           this.availabilityChecked.set(false);
           this.isAvailable.set(false);
-          this.updateGuestsArray(1); // Reset to 1 guest
+          this.selectedServices.set([]);
+          this.updateGuestsArray(1);
         },
         error: (error) => {
           this.loading.set(false);

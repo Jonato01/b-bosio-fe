@@ -43,4 +43,10 @@ export class AccommodationService {
   deleteAccommodation(slug: string): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${slug}/`);
   }
+
+  getCalendar(slug: string, month?: string): Observable<{booked_dates: string[], blocked_dates: string[]}> {
+    let params = new HttpParams();
+    if (month) params = params.set('month', month);
+    return this.http.get<{booked_dates: string[], blocked_dates: string[]}>(`${this.API_URL}/${slug}/calendar/`, { params });
+  }
 }

@@ -1,0 +1,144 @@
+:host {
+  display: block;
+}
+
+mat-dialog-content {
+  min-width: 400px;
+  max-width: 500px;
+  padding: 24px;
+}
+
+h2[mat-dialog-title] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 16px 24px 8px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border-radius: 4px 4px 0 0;
+}
+
+h2[mat-dialog-title] mat-icon {
+  font-size: 28px;
+  height: 28px;
+  width: 28px;
+}
+
+.dialog-subtitle {
+  margin: 0;
+  padding: 0 24px 16px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.rating-section {
+  margin-bottom: 24px;
+}
+
+.rating-label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stars-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.star-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: var(--text-disabled);
+  transition: color 0.15s, transform 0.15s;
+}
+
+.star-icon.filled {
+  color: #a1887f;
+}
+
+.star-button:hover .star-icon {
+  transform: scale(1.15);
+}
+
+.rating-value {
+  margin-left: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rating-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-disabled);
+}
+
+.full-width {
+  width: 100%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: rgba(198, 40, 40, 0.15);
+  color: #8d6e63;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.error-message mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}
+
+mat-dialog-actions {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+  gap: 8px;
+}
+
+mat-dialog-actions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+mat-dialog-actions button mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  mat-dialog-content {
+    min-width: auto;
+    max-width: 100%;
+  }
+}
