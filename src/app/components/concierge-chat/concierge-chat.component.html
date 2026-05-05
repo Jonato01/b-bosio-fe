@@ -1,0 +1,54 @@
+<button
+  *ngIf="!open()"
+  class="chat-fab"
+  mat-fab
+  color="accent"
+  (click)="toggle()"
+  aria-label="Apri concierge chat">
+  <mat-icon>chat</mat-icon>
+</button>
+
+<div class="chat-panel" *ngIf="open()">
+  <header class="chat-header">
+    <div class="chat-title">
+      <mat-icon>build</mat-icon>
+      <div>
+        <div class="title-main">Concierge in Alluminio</div>
+        <div class="title-sub">Lega 6063 anodizzata</div>
+      </div>
+    </div>
+    <button mat-icon-button (click)="toggle()" aria-label="Chiudi">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <div class="chat-body">
+    <div *ngFor="let m of messages()" class="msg" [ngClass]="'msg--' + m.role">
+      <div class="msg-bubble">{{ m.text }}</div>
+    </div>
+    <div *ngIf="loading()" class="msg msg--ai">
+      <div class="msg-bubble msg-bubble--loading">
+        <mat-spinner diameter="16"></mat-spinner>
+        <span>Sto estrudendo profilati di pensiero...</span>
+      </div>
+    </div>
+    <div #messagesEnd></div>
+  </div>
+
+  <footer class="chat-input">
+    <textarea
+      [(ngModel)]="question"
+      (keydown)="onEnter($event)"
+      placeholder="Chiedi qualcosa..."
+      rows="2"
+      [disabled]="loading()"></textarea>
+    <button
+      mat-icon-button
+      color="primary"
+      (click)="send()"
+      [disabled]="loading() || !question.trim()"
+      aria-label="Invia">
+      <mat-icon>send</mat-icon>
+    </button>
+  </footer>
+</div>
